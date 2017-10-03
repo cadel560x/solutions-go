@@ -6,46 +6,51 @@ import (
 )
 
 func main() {
-	var output big.Int
+	// var facto uint64
+	facto := new(big.Int).SetUint64(0)
+	// var digiSum uint16
 
-	output = factorial(100)
+	facto = factorial(100)
+	fmt.Println("Factorial of 100: ", facto)
 
-	fmt.Println("Factorial of 100: ", output)
-	// fmt.Println("The digit sum of ", output, "is :", digitSum(output))
+	digiSum = digitSum(facto)
+	// fmt.Println("The digit sum of ", facto, "is :", digiSum)
 
 } // main
 
-func factorial(n uint8) big.Int {
-	var factorial, m big.Int
-	factorial.SetUint64(1)
+func factorial(n uint8) *big.Int {
+	// factorial := new(big.Int).SetUint64(1)
+	// factorial := new(big.Int).SetUint64(uint64(n))
+	// i := new(big.Int).SetUint64(uint64(n))
 
-	fmt.Println("Debug: func factorial: n", n)
+	// for i.Sign() > 0 {
+	// 	factorial *= i
+	// }
 
-	for n > 0 {
-		m.SetUint64(uint64(n))
-		factorial.Mul(factorial, m)
-		n--
-		fmt.Println("Debug: func factorial: for loop: factorial", factorial)
-		fmt.Println("Debug: func factorial: for loop: n", n)
-	}
-
-	return factorial
+	return new(big.Int).MulRange(1, int64(n))
+	// 93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
 } // factorial
 
-func digitSum(n float64) float64 {
-	var sum float64
+func digitSum(n big.Int) uint16 {
+	// Converting parameter 'n' from float64 type to big.Int type
+	// nBigInt, _ := big.NewFloat(n).Int(nil)
+
+	var sum uint16
 	var digit uint8
-	var pow10 uint64 = 1
 
-	for n > 0 {
-		pow10 *= 10
-		digit = uint8(uint64(n) % pow10)
-		sum += float64(digit)
+	// for nBigInt.Sign() > 0 {
+	// 	digit = uint8(new(big.Int).Mod(nBigInt, new(big.Int).SetUint64(10)).Uint64())
+	// 	sum += uint16(digit)
 
-		n /= float64(pow10)
+	// 	nBigInt.Div(nBigInt, new(big.Int).SetUint64(10))
 
-		fmt.Println("Debug: func digitSum: for loop: n", n)
-		fmt.Println("Debug: func digitSum: for loop: pow10", pow10)
+	for n.Sign() > 0 {
+		digit = uint8(new(big.Int).Mod(nBigInt, new(big.Int).SetUint64(10)).Uint64())
+		sum += uint16(digit)
+
+		nBigInt.Div(nBigInt, new(big.Int).SetUint64(10))
+
+		fmt.Println("Debug: func digitSum: for loop: n", nBigInt)
 		fmt.Println("Debug: func digitSum: for loop: digit", digit)
 		fmt.Println("Debug: func digitSum: for loop: sum", sum)
 	}
