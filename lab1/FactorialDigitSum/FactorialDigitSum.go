@@ -43,6 +43,7 @@ func factorial(n uint8) *big.Int {
 } // factorial
 
 func digitSum(m *big.Int) uint16 {
+	// Copy of 'm' into a new 'big.Int', so we don't mess up with the parameter passed
 	n := new(big.Int)
 	n.Set(m)
 
