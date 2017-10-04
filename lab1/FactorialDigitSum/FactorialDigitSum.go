@@ -44,8 +44,7 @@ func factorial(n uint8) *big.Int {
 
 func digitSum(m *big.Int) uint16 {
 	n := new(big.Int)
-
-	*n = *m
+	n.Set(m)
 
 	var sum uint16
 	var digit uint8
