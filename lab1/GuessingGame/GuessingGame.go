@@ -6,7 +6,6 @@ import (
 	"math/rand"
 )
 
-// Tree data structure and methods taken from https://golang.org/doc/play/tree.go
 func main() {
 	// Tree data structure where attempts are stored
 	guessingTree := &tree{}
@@ -18,6 +17,7 @@ func main() {
 	randomNumber := uint16(rand.Intn(9999) + 1)
 	var triedNumber uint16
 	var found bool
+	var tryCounter, previousTriedNumber, foundValue uint16
 
 	// Title
 	fmt.Println("Guessing Game")
@@ -30,6 +30,15 @@ func main() {
 	// Debug
 	fmt.Printf("Debug: randomNumber: %d\n\n", randomNumber)
 
+	// Let's make the 'randomNumber' the root of the 'guessingTree'
+	guessingTree.insert(randomNumber)
+
+	// Debug
+	// fmt.Println("Debug: tree: traverse:")
+	// guessingTree.traverse(guessingTree.Root, func(n *node) { fmt.Printf("Value: %d | ", n.Value) })
+	// fmt.Println()
+
+
 	// Capture the first try
 	fmt.Print("Guess a number: ")
 	fmt.Scan(&triedNumber)
@@ -39,26 +48,58 @@ func main() {
 		// Debug
 		fmt.Printf("Debug: triedNumber: %d\n\n", triedNumber)
 
-		guessingTree.insert(randomNumber)
-		// Debug
-		fmt.Println("Debug: tree: traverse:")
-		guessingTree.traverse(guessingTree.Root, func(n *node) { fmt.Printf("Value: %d | ", n.Value) })
-		fmt.Println()
-
-		found = guessingTree.find(triedNumber)
+		foundValue, found = guessingTree.find(triedNumber)
 		// Debug
 		fmt.Println("Debug: tree: find: ", found, "\n")
 
-		if found {
+		// 'randomNumber' was guessed
+		if foundValue == randomNumber {
+			// Count this try
+			tryCounter++
+			// Debug
+			fmt.Println("Debug: for loop: tryCounter: ", tryCounter, "\n")
+
 			// Force loop exit
-			triedNumber = 0
+			// triedNumber = 0
+			break;
+
+		// 'triedNumber' is found in 'guessingTree'
+		} else if foundValue != randomNumber && found {
+			// Debug
+			fmt.Println("Debug: for loop: previousTriedNumber: ", previousTriedNumber, "\n")
+
+			// Avoid counting the same number multiple times consecutively
+			if previousTriedNumber != triedNumber {
+				tryCounter++
+				// Debug
+				fmt.Println("Debug: for loop: tryCounter: ", tryCounter, "\n")
+			}
+
+			// Save 'triedNumber' value for next iteration
+			previousTriedNumber = triedNumber
+			// Debug
+			fmt.Println("Debug: for loop: previousTriedNumber: ", previousTriedNumber)
+			fmt.Println("Debug: for loop: triedNumber: ", triedNumber)
+			fmt.Println("Debug: for loop: tryCounter: ", tryCounter, "\n")
+
+		// 'triedNumber' is not in 'guessingTree'
 		} else {
+			// Add the new 'triedNumber' into the 'guessingTree'
 			guessingTree.insert(triedNumber)
 			// Debug
 			fmt.Println("Debug: tree: traverse:")
 			guessingTree.traverse(guessingTree.Root, func(n *node) { fmt.Printf("Value: %d | ", n.Value) })
 			fmt.Println()
-		}
+
+			// Save 'triedNumber' value for next iteration
+			previousTriedNumber = triedNumber
+			tryCounter++
+			// Debug
+			fmt.Println("Debug: for loop: previousTriedNumber: ", previousTriedNumber)
+			fmt.Println("Debug: for loop: triedNumber: ", triedNumber)
+			fmt.Println("Debug: for loop: tryCounter: ", tryCounter, "\n")
+
+		} // if - else if - else
 
 		// Subsequent capture
 		fmt.Print("Guess a number: ")
@@ -70,6 +111,7 @@ func main() {
 
 // I searched for a Go implementation of a binary tree in Go's API and didn't find one.
 // Tree data structure taken and adapted from https://appliedgo.net/bintree/
+
 // Node
 type node struct {
 	Value uint16
@@ -99,33 +141,33 @@ func (n *node) insert(value uint16) error {
 		return n.Right.insert(value)
 	}
 	return nil
-} // insert
+} // node::insert
 
-func (n *node) find(s uint16) bool {
+func (n *node) find(s uint16) (uint16, bool) {
 
 	if n == nil {
 		// Return value of '0' means 'not found'
-		return false
+		return 0, false
 	}
 
 	switch {
 	case s == n.Value:
 		// Debug
 		fmt.Println("Debug: node: find: s: ", s)
-		return true
+		return n.Value, true
 	case s < n.Value:
 		return n.Left.find(s)
 	default:
 		return n.Right.find(s)
 	}
-} // find
+} // node::find
 
 func (n *node) findMax(parent *node) (*node, *node) {
 	if n.Right == nil {
 		return n, parent
 	}
 	return n.Right.findMax(n)
-} // findMax
+} // node::findMax
 
 // replaceNode replaces the parent’s child pointer to n with a pointer to the replacement node. parent must not be nil.
 func (n *node) replaceNode(parent, replacement *node) error {
@@ -139,7 +181,7 @@ func (n *node) replaceNode(parent, replacement *node) error {
 	}
 	parent.Right = replacement
 	return nil
-} // replaceNode
+} // node::replaceNode
 
 // Delete removes an element from the tree. It is an error to try deleting an element that does not exist. In order to remove an element properly, Delete needs to know the node’s parent node. parent must not be nil.
 func (n *node) delete(s uint16, parent *node) error {
@@ -174,7 +216,7 @@ func (n *node) delete(s uint16, parent *node) error {
 		// Then remove the replacement node.
 		return replacement.delete(replacement.Value, replParent)
 	}
-}
+} // node::delete
 
 // Tree
 type tree struct {
@@ -189,15 +231,16 @@ func (t *tree) insert(value uint16) error {
 	}
 	// …else call Node.Insert.
 	return t.Root.insert(value)
-}
+} // tree::insert
 
 // Find calls Node.Find unless the root node is nil
-func (t *tree) find(s uint16) bool {
+func (t *tree) find(s uint16) (uint16, bool) {
 	if t.Root == nil {
-		return false
+		// Return value of '0' means 'not found'
+		return 0, false
 	}
 	return t.Root.find(s)
-}
+} // tree::find
 
 // Delete has one special case: the empty tree. (And deleting from an empty tree is an error.) In all other cases, it calls Node.Delete.
 func (t *tree) delete(s uint16) error {
@@ -216,7 +259,7 @@ func (t *tree) delete(s uint16) error {
 		t.Root = nil
 	}
 	return nil
-}
+} // tree::delete
 
 // Traverse is a simple method that traverses the tree in left-to-right order (which, by pure incidence ;-), is the same as traversing from smallest to largest value) and calls a custom function on each node.
 func (t *tree) traverse(n *node, f func(*node)) {
@@ -226,4 +269,4 @@ func (t *tree) traverse(n *node, f func(*node)) {
 	t.traverse(n.Left, f)
 	f(n)
 	t.traverse(n.Right, f)
-}
+} // tree::traverse
