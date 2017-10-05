@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	// Tree data structure where attempts are stored
+	// Binary Search Tree data structure where attempts are stored
 	guessingTree := &tree{}
 
 	// s1 := rand.NewSource(time.Now().UnixNano())
@@ -15,9 +15,10 @@ func main() {
 
 	// Debug
 	randomNumber := uint16(rand.Intn(9999) + 1)
-	var triedNumber uint16
-	var found bool
-	var tryCounter, previousTriedNumber, foundValue uint16
+
+	var triedNumber uint16 = 10001
+	// var found bool
+	var tryCounter, previousTriedNumber uint16
 
 	// Title
 	fmt.Println("Guessing Game")
@@ -38,74 +39,42 @@ func main() {
 	// guessingTree.traverse(guessingTree.Root, func(n *node) { fmt.Printf("Value: %d | ", n.Value) })
 	// fmt.Println()
 
-
 	// Capture the first try
-	fmt.Print("Guess a number: ")
-	fmt.Scan(&triedNumber)
+	// fmt.Print("Guess a number: ")
+	// fmt.Scan(&triedNumber)
 
 	// Main game loop
-	for triedNumber != 0 {
-		// Debug
-		fmt.Printf("Debug: triedNumber: %d\n\n", triedNumber)
+	for triedNumber != randomNumber && triedNumber != 0 {
+		// Number capture
+		fmt.Print("Guess a number: ")
+		fmt.Scan(&triedNumber)
 
-		foundValue, found = guessingTree.find(triedNumber)
-		// Debug
-		fmt.Println("Debug: tree: find: ", found, "\n")
-
-		// 'randomNumber' was guessed
-		if foundValue == randomNumber {
-			// Count this try
+		// Automata loops until its state changes
+		if triedNumber != previousTriedNumber {
+			// Automata state changed
+			// Save change of state
+			previousTriedNumber = triedNumber
 			tryCounter++
-			// Debug
-			fmt.Println("Debug: for loop: tryCounter: ", tryCounter, "\n")
 
-			// Force loop exit
-			// triedNumber = 0
-			break;
-
-		// 'triedNumber' is found in 'guessingTree'
-		} else if foundValue != randomNumber && found {
-			// Debug
-			fmt.Println("Debug: for loop: previousTriedNumber: ", previousTriedNumber, "\n")
-
-			// Avoid counting the same number multiple times consecutively
-			if previousTriedNumber != triedNumber {
-				tryCounter++
-				// Debug
-				fmt.Println("Debug: for loop: tryCounter: ", tryCounter, "\n")
+			if !guessingTree.find(triedNumber) {
+				guessingTree.insert(triedNumber)
 			}
 
-			// Save 'triedNumber' value for next iteration
-			previousTriedNumber = triedNumber
-			// Debug
-			fmt.Println("Debug: for loop: previousTriedNumber: ", previousTriedNumber)
-			fmt.Println("Debug: for loop: triedNumber: ", triedNumber)
-			fmt.Println("Debug: for loop: tryCounter: ", tryCounter, "\n")
-
-		// 'triedNumber' is not in 'guessingTree'
-		} else {
-			// Add the new 'triedNumber' into the 'guessingTree'
-			guessingTree.insert(triedNumber)
 			// Debug
 			fmt.Println("Debug: tree: traverse:")
 			guessingTree.traverse(guessingTree.Root, func(n *node) { fmt.Printf("Value: %d | ", n.Value) })
 			fmt.Println()
 
-			// Save 'triedNumber' value for next iteration
-			previousTriedNumber = triedNumber
-			tryCounter++
-			// Debug
-			fmt.Println("Debug: for loop: previousTriedNumber: ", previousTriedNumber)
-			fmt.Println("Debug: for loop: triedNumber: ", triedNumber)
-			fmt.Println("Debug: for loop: tryCounter: ", tryCounter, "\n")
-
-		} // if - else if - else
-
-		// Subsequent capture
-		fmt.Print("Guess a number: ")
-		fmt.Scan(&triedNumber)
+		} // if automata
 
 	} // for - main game loop
+
+	// If user chosed to exit, the last try doesn't count
+	if triedNumber == 0 && tryCounter > 0 {
+		tryCounter--
+	}
+
+	fmt.Println("Number of tries: ", tryCounter)
 
 } // main
 
@@ -143,18 +112,18 @@ func (n *node) insert(value uint16) error {
 	return nil
 } // node::insert
 
-func (n *node) find(s uint16) (uint16, bool) {
+func (n *node) find(s uint16) bool {
 
 	if n == nil {
 		// Return value of '0' means 'not found'
-		return 0, false
+		return false
 	}
 
 	switch {
 	case s == n.Value:
 		// Debug
 		fmt.Println("Debug: node: find: s: ", s)
-		return n.Value, true
+		return true
 	case s < n.Value:
 		return n.Left.find(s)
 	default:
@@ -234,10 +203,10 @@ func (t *tree) insert(value uint16) error {
 } // tree::insert
 
 // Find calls Node.Find unless the root node is nil
-func (t *tree) find(s uint16) (uint16, bool) {
+func (t *tree) find(s uint16) bool {
 	if t.Root == nil {
 		// Return value of '0' means 'not found'
-		return 0, false
+		return false
 	}
 	return t.Root.find(s)
 } // tree::find
