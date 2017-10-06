@@ -1,5 +1,5 @@
 # Lab 1 Go Problem Sheet
-This is the first problem sheet for Data Rep.
+This is the first problem sheet
 
 1. HelloWorldJapanese
 2. CurrentTime
