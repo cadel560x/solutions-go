@@ -9,7 +9,7 @@ Prints the current time and date
 Implements the FizzBuzz problem
 4. FactorialDigitsum  
 Uses 'big.Int' to calculate the factorial of 100 and the sum of the digits of 100!
-5. GuessingGame
+5. GuessingGame  
 Guess a number between 1 and 65534. Uses a Binary Search Tree
 6. MaxMinList  
 Returns the smallest and largest value of a linked list of uint8
