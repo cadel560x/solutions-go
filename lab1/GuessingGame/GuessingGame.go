@@ -4,17 +4,18 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"time"
 )
 
 func main() {
 	// Binary Search Tree data structure where attempts are stored
 	guessingTree := &tree{}
 
-	// s1 := rand.NewSource(time.Now().UnixNano())
-	// randomNumber := rand.New(s1)
+	s1 := rand.NewSource(time.Now().UnixNano())
+	randomNumber := uint16(rand.New(s1).Intn(65533) + 1)
 
 	// Debug
-	randomNumber := uint16(rand.Intn(9999) + 1)
+	// randomNumber := uint16(rand.Intn(65533) + 1)
 
 	var triedNumber uint16 = 65535
 	// var found bool
@@ -29,7 +30,7 @@ func main() {
 	fmt.Println("Press '0' to exit.\n")
 
 	// Debug
-	fmt.Printf("Debug: randomNumber: %d\n\n", randomNumber)
+	// fmt.Printf("Debug: randomNumber: %d\n\n", randomNumber)
 
 	// Let's make the 'randomNumber' the root of the 'guessingTree'
 	guessingTree.insert(randomNumber)
@@ -42,10 +43,20 @@ func main() {
 	// Main game loop
 	for triedNumber != randomNumber && triedNumber > 0 {
 		// Number capture
-		fmt.Print("Guess a number: ")
+		fmt.Print("Guess a number (0 to exit): ")
 		fmt.Scan(&triedNumber)
 
-		// Automata loops until its state changes
+		if triedNumber == 0 {
+			// Do nothing and exit
+		} else if triedNumber < randomNumber {
+			fmt.Println("Too low, try again\n")
+		} else if triedNumber > randomNumber {
+			fmt.Println("Too high, try again\n")
+		} else {
+			fmt.Println("Congratulations!! YOU WON!!")
+		}
+
+		// Loops until the state changes
 		if triedNumber != previousTriedNumber {
 			tryCounter++
 
@@ -54,15 +65,14 @@ func main() {
 			}
 
 			// Debug
-			fmt.Println("Debug: tree: traverse:")
-			guessingTree.traverse(guessingTree.Root, func(n *node) { fmt.Printf("Value: %d | ", n.Value) })
-			fmt.Println()
+			// fmt.Println("Debug: tree: traverse:")
+			// guessingTree.traverse(guessingTree.Root, func(n *node) { fmt.Printf("Value: %d | ", n.Value) })
+			// fmt.Println()
 
-			// Automata state changed
-			// Save change in automata state
+			// Save state change
 			previousTriedNumber = triedNumber
 
-		} // if automata
+		} // if
 
 	} // for - main game loop
 
@@ -119,7 +129,7 @@ func (n *node) find(s uint16) bool {
 	switch {
 	case s == n.Value:
 		// Debug
-		fmt.Println("Debug: node: find: s: ", s)
+		// fmt.Println("Debug: node: find: s: ", s)
 		return true
 	case s < n.Value:
 		return n.Left.find(s)
