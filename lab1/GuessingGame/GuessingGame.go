@@ -16,7 +16,7 @@ func main() {
 	// Debug
 	randomNumber := uint16(rand.Intn(9999) + 1)
 
-	var triedNumber uint16 = 10001
+	var triedNumber uint16 = 65535
 	// var found bool
 	var tryCounter, previousTriedNumber uint16
 
@@ -25,7 +25,7 @@ func main() {
 	fmt.Println("-------------\n")
 
 	// Instructions
-	fmt.Println("Guess a number positive integer between 1 and 10000 inclusive.")
+	fmt.Println("Guess a number positive integer between 1 and 65534 inclusive.")
 	fmt.Println("Press '0' to exit.\n")
 
 	// Debug
@@ -39,21 +39,14 @@ func main() {
 	// guessingTree.traverse(guessingTree.Root, func(n *node) { fmt.Printf("Value: %d | ", n.Value) })
 	// fmt.Println()
 
-	// Capture the first try
-	// fmt.Print("Guess a number: ")
-	// fmt.Scan(&triedNumber)
-
 	// Main game loop
-	for triedNumber != randomNumber && triedNumber != 0 {
+	for triedNumber != randomNumber && triedNumber > 0 {
 		// Number capture
 		fmt.Print("Guess a number: ")
 		fmt.Scan(&triedNumber)
 
 		// Automata loops until its state changes
 		if triedNumber != previousTriedNumber {
-			// Automata state changed
-			// Save change of state
-			previousTriedNumber = triedNumber
 			tryCounter++
 
 			if !guessingTree.find(triedNumber) {
@@ -64,6 +57,10 @@ func main() {
 			fmt.Println("Debug: tree: traverse:")
 			guessingTree.traverse(guessingTree.Root, func(n *node) { fmt.Printf("Value: %d | ", n.Value) })
 			fmt.Println()
+
+			// Automata state changed
+			// Save change in automata state
+			previousTriedNumber = triedNumber
 
 		} // if automata
 
