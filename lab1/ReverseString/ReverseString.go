@@ -12,15 +12,13 @@ func main() {
 	fmt.Print("Please enter a word: ")
 	fmt.Scanln(&input)
 
-	fmt.Printf("Is %s palindrome: %t\n\n", input, palindrome(input))
+	fmt.Printf("%s reversed is: %s\n\n", input, reverseString(input))
 
 } // main
 
-func palindrome(testString string) bool {
-	// I didn't find a native, out of the box implementation of a stack in Go
-	// So, let's use a linked list a stack
+func reverseString(testString string) string {
+	// Code snippet taken from 'Palindrome' exercise
 	aStack := list.New()
-
 	var stringBuilder bytes.Buffer
 
 	// Push 'testString' into 'aStack'
@@ -30,7 +28,7 @@ func palindrome(testString string) bool {
 	}
 
 	// Debug
-	// fmt.Print("Debug: palindrome(): ")
+	// fmt.Print("Debug: reverseString(): ")
 	// for e := aStack.Front(); e != nil; e = e.Next() {
 	// 	fmt.Printf("%c", e.Value.(rune))
 	// }
@@ -43,11 +41,7 @@ func palindrome(testString string) bool {
 	}
 
 	// Debug
-	// fmt.Println("Debug: palindrome(): stringBuilder: ", string(stringBuilder.String()))
+	// fmt.Println("Debug: reverseString(): stringBuilder: ", string(stringBuilder.String()))
 
-	if testString == stringBuilder.String() {
-		return true
-	}
-
-	return false
-} // palindrome
+	return stringBuilder.String()
+} // reverseString
