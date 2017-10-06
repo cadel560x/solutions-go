@@ -7,13 +7,25 @@ import (
 )
 
 func main() {
+	// Generate lists
+	slice1 := generateSlice(5)
+	slice2 := generateSlice(5)
 
-	slice := generateSlice(50)
-	fmt.Println("\n --- unsorted --- \n\n", slice)
-	fmt.Println("\n--- sorted ---\n\n", mergeSort(slice), "\n")
+	// Sort the lists
+	slice1 = mergeSort(slice1)
+	slice2 = mergeSort(slice2)
+
+	// Print the lists
+	fmt.Println("\nLists before merge:")
+	fmt.Println("slice1: ", slice1)
+	fmt.Println("slice2: ", slice2)
+
+	fmt.Println("\nLists after merge:")
+	fmt.Println(merge(slice1, slice2))
+
 } // main
 
-// Generates a slice of size, size filled with random numbers
+// Generates a list of 'size', filled with random numbers
 func generateSlice(size int) []int {
 
 	slice := make([]int, size, size)
@@ -24,7 +36,7 @@ func generateSlice(size int) []int {
 	return slice
 } // generateSlice
 
-// Runs MergeSort algorithm on a slice single
+// Runs MergeSort algorithm on a single list
 func mergeSort(slice []int) []int {
 
 	if len(slice) < 2 {
@@ -34,7 +46,7 @@ func mergeSort(slice []int) []int {
 	return merge(mergeSort(slice[:mid]), mergeSort(slice[mid:]))
 } // mergeSort
 
-// Merges left and right slice into newly created slice
+// Merges left and right lists into newly created list
 func merge(left, right []int) []int {
 
 	size, i, j := len(left)+len(right), 0, 0
