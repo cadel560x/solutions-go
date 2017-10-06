@@ -49,23 +49,28 @@ func mergeSort(slice []int) []int {
 // Merges left and right lists into newly created list
 func merge(left, right []int) []int {
 
+	// Set the 'size' of the resulting 'slice' after merging
 	size, i, j := len(left)+len(right), 0, 0
 	slice := make([]int, size, size)
 
 	for k := 0; k < size; k++ {
+		// If there are remaining elements of the 'right list' to put in the resulting 'slice', put them in.
 		if i > len(left)-1 && j <= len(right)-1 {
 			slice[k] = right[j]
 			j++
+			// If there are remaining elements of the 'left list' to put in the resulting 'slice', put them in.
 		} else if j > len(right)-1 && i <= len(left)-1 {
 			slice[k] = left[i]
 			i++
+			// If 'left list' element is smaller than 'right list' element, goes into the resulting 'slice'
 		} else if left[i] < right[j] {
 			slice[k] = left[i]
 			i++
 		} else {
+			// If 'right list' element is smaller than 'left list' element, goes into the resulting 'slice'
 			slice[k] = right[j]
 			j++
-		} // if
+		} // if - else if - else if - else
 
 	} // for
 

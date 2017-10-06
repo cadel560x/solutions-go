@@ -14,10 +14,10 @@ Guess a number between 1 and 65534. Uses a Binary Search Tree
 6. MaxMinList  
 Returns the smallest and largest value of a linked list of uint8
 7. Palindrome  
-Determine if a given word is palindrome using stack data structure
+Determine if a given word is palindrome using stack data structure. Uses 'rune' data type
 8. MergeSort  
-Merges two sorted linked lists into one sorted linked list
+Merges two sorted linked lists into one sorted linked list using Merge sort algorithm
 9. NewtonSqrt  
 Calculates the square root of a number using Newton's method
 10. ReverseString  
-Reverse a given string using stack data structure
+Reverse a given string using stack data structure. Uses 'rune' data type
